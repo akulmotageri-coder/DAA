@@ -1,5 +1,3 @@
-package p9149; // package name (can be anything or removed in exam)
-
 import java.util.Scanner; // used to take input from user
 
 public class DijkstraFinal {
@@ -12,46 +10,48 @@ public class DijkstraFinal {
         int numNodes = sc.nextInt(); // read number of nodes (vertices)
 
         // costMatrix stores graph weights (adjacency matrix)
-        // size is numNodes+1 because we are using 1-based indexing
-        int[][] costMatrix = new int[numNodes + 1][numNodes + 1];
+        // size is numNodes because we are using 0-based indexing
+        int[][] costMatrix = new int[numNodes][numNodes];
 
         // distance[i] → shortest distance from source to node i
-        int[] distance = new int[numNodes + 1];
+        int[] distance = new int[numNodes];
 
         // visited[i] → 1 if node is processed, 0 otherwise
-        int[] visited = new int[numNodes + 1];
+        int[] visited = new int[numNodes];
 
         // parent[i] → stores previous node in shortest path
-        int[] parent = new int[numNodes + 1];
+        int[] parent = new int[numNodes];
 
         System.out.println("Cost matrix:");
 
-        // read cost matrix from user
-        for (int i = 1; i <= numNodes; i++) {
-            for (int j = 1; j <= numNodes; j++) {
+        // read cost matrix from user (0-based)
+        for (int i = 0; i < numNodes; i++) {
+            for (int j = 0; j < numNodes; j++) {
                 costMatrix[i][j] = sc.nextInt(); // weight from i → j
             }
         }
 
-        System.out.print("Source vertex: ");
+        System.out.print("Source vertex (0 to " + (numNodes - 1) + "): ");
         int source = sc.nextInt(); // starting node
 
-        // call Dijkstra function (your order maintained)
+        // call Dijkstra function
         dijkstra(numNodes, costMatrix, distance, visited, parent, source);
 
         // print shortest paths
-        printPaths(numNodes, costMatrix, distance, visited, parent, source);
+        printPaths(numNodes, distance, parent, source);
 
         sc.close(); // close scanner
     }
 
-    // Dijkstra Algorithm function
+    // -------------------------------
+    // DIJKSTRA ALGORITHM FUNCTION
+    // -------------------------------
     static void dijkstra(int numNodes, int[][] costMatrix,
                          int[] distance, int[] visited,
                          int[] parent, int source) {
 
         // STEP 1: INITIALIZATION
-        for (int i = 1; i <= numNodes; i++) {
+        for (int i = 0; i < numNodes; i++) {
 
             // initially distance from source to i is direct edge weight
             distance[i] = costMatrix[source][i];
@@ -70,13 +70,13 @@ public class DijkstraFinal {
         visited[source] = 1;
 
         // STEP 2: MAIN LOOP (run n-1 times)
-        for (int count = 2; count <= numNodes; count++) {
+        for (int count = 1; count < numNodes; count++) {
 
             int minDistance = Integer.MAX_VALUE; // store minimum distance
             int nearestNode = -1; // store node with minimum distance
 
             // find nearest unvisited node
-            for (int i = 1; i <= numNodes; i++) {
+            for (int i = 0; i < numNodes; i++) {
 
                 // check if node is unvisited AND has smaller distance
                 if (visited[i] == 0 && distance[i] < minDistance) {
@@ -89,7 +89,7 @@ public class DijkstraFinal {
             visited[nearestNode] = 1;
 
             // STEP 3: UPDATE distances of neighbors
-            for (int j = 1; j <= numNodes; j++) {
+            for (int j = 0; j < numNodes; j++) {
 
                 // check:
                 // 1. node j is not visited
@@ -107,16 +107,18 @@ public class DijkstraFinal {
         }
     }
 
-    // Function to print shortest paths
-    static void printPaths(int numNodes, int[][] costMatrix,
-                           int[] distance, int[] visited,
+    // -------------------------------
+    // FUNCTION TO PRINT SHORTEST PATHS
+    // -------------------------------
+    static void printPaths(int numNodes,
+                           int[] distance,
                            int[] parent, int source) {
 
         // for every node
-        for (int i = 1; i <= numNodes; i++) {
+        for (int i = 0; i < numNodes; i++) {
 
-            // skip source, print only reachable nodes
-            if (visited[i] == 1 && i != source) {
+            // skip source
+            if (i != source) {
 
                 // print shortest distance
                 System.out.println("Shortest distance from " + source +
